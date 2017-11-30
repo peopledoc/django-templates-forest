@@ -10,7 +10,7 @@ def read_relative_file(filename):
 
 
 README = read_relative_file('README.md')
-version = '0.0.1'
+version = '0.0.1.beta'
 
 if __name__ == '__main__':
     setup(
