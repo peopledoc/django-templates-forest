@@ -1,5 +1,6 @@
 import os
 import logging
+import six
 from anytree import Node, RenderTree
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -63,9 +64,6 @@ class BaseTemplateCommand(BaseCommand):
         """
         var = None
         try:
-            # if template == "mails/routing_action/body.html":
-            #     import ipdb; ipdb.set_trace()
-
             nodes = get_template(template).template.nodelist
 
             if not nodes or not isinstance(nodes[0], ExtendsNode):
@@ -73,7 +71,6 @@ class BaseTemplateCommand(BaseCommand):
                 return
             parent = nodes[0].parent_name
 
-            # parent = get_template(template).template.nodelist[0].parent_name
             token = parent.token.replace('"', '').replace("'", '')
             var = str(parent.var)
         except AttributeError as e:
@@ -155,7 +152,7 @@ class BaseTemplateCommand(BaseCommand):
             for t, p in templates
         }
 
-        for t, p in template_nodes.iteritems():
+        for t, p in six.iteritems(template_nodes):
             includes = self.get_include_templates(t)
             p["includes"] = includes
             for i in includes:
