@@ -1,0 +1,8 @@
+-r base.txt
+
+# Core requirements
+
+gunicorn==19.6.0
+newrelic==2.68.0.50
+
+# Addons requirements
