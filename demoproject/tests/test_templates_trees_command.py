@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 from templates_forest.management.commands.templates.base_command import BaseTemplateCommand  # noqa
 
 
@@ -7,7 +7,7 @@ class MockCommand(BaseTemplateCommand):
         pass
 
 
-class TemplatesTreesTesCase(TestCase):
+class TemplatesTreesTesCase(SimpleTestCase):
 
     def test_basic_inheritance(self):
         cmd = MockCommand()
