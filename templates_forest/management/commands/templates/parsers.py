@@ -1,39 +1,26 @@
-from django.template.base import Node
-from django.template.loader_tags import IncludeNode, ExtendsNode
+import re
 from django.template.loader import get_template
 
 
 class IncludeTemplatesParser(object):
 
-    def walk_nodes(self, node, original=None, context=None):
-        if original is None:
-            original = node
-        for n in self.get_nodelist(node, original, context):
-            if isinstance(n, IncludeNode):
-                yield n.template.var
-            else:
-                for n1 in self.walk_nodes(n, original, context):
-                    yield n1
+    def search_included(self, template):
+        content = template.source
+        pattern = re.compile(
+            r"\{\%\s?include ([^%]+)[\swith]?\s?\%\}",
+            re.MULTILINE | re.IGNORECASE
+        )
+        matches = re.finditer(pattern, content)
 
-    def get_nodelist(self, node, original, context):
-        if isinstance(node, ExtendsNode):
-            return getattr(node, 'nodelist', [])
+        if not matches:
+            return
 
-        nodelist = []
-        if isinstance(node, Node):
-            for attr in node.child_nodelists:
-                nodelist += getattr(node, attr, [])
-        else:
-            nodelist = getattr(node, 'nodelist', [])
-        return nodelist
-
-    def _get_node(self, template, context=None):
-        for node in template:
-            if isinstance(node, IncludeNode):
-                return node
-            elif isinstance(node, ExtendsNode):
-                return self._get_node(node.nodelist, context)
-        return []
+        for match in matches:
+            template_name = (match.group(1)
+                                  .strip()
+                                  .replace('"', '')
+                                  .replace("'", ""))
+            yield template_name.split(" with ")[0]
 
     def included_templates(self, template_name):
-        return self.walk_nodes(get_template(template_name).template)
+        return self.search_included(get_template(template_name).template)
