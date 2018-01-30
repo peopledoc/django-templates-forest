@@ -24,12 +24,20 @@ parameters.
 - ``--vars`` You can pass some variables that will be used in the template's
   context, for example when you use dynamic inheritance e.g.:
     ``{% extends my_var %}``
-  you can call the command using: ``--vars my_var=foo.html``
+  you can call the command using: ``--vars my_var=foo.html``.
+
+  For boolean variables you can pass ``True`` or ``False`` values, for example ``--vars my_var=False``
+
+  It also works if the variable in the template is an attribute of an object: ``--vars foo.bar.aze=base.html``  
 
 ## templates_trees
 
 Displays a list of trees found. For each tree we display the top template to
 select which tree to display.
+
+Next to each tree root we have the ``height`` of the three (the number of edges on the longest downward path between the root and a leaf)
+
+![Templates_trees command example](screenshots/templates_trees.png "Example of the templates_tree command result")
 
 ## template_info ``<template path>``
 
