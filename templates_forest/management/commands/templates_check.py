@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import os
+import six
 from django.conf import settings
 from .templates.base_command import BaseTemplateCommand
 
@@ -11,7 +12,7 @@ class Command(BaseTemplateCommand):
     def _handle(self):
         single_use = []
         never_used = []
-        for template_name, info in self.template_nodes.iteritems():
+        for template_name, info in six.iteritems(self.template_nodes):
             if len(info["included_in"]) == 1:
                 single_use.append(template_name)
 
@@ -22,7 +23,7 @@ class Command(BaseTemplateCommand):
 
         never_used = [
             n
-            for n, found in self._found_in_python_files(never_used).iteritems()
+            for n, found in six.iteritems(self._found_in_python_files(never_used))  # noqa
             if not found
         ]
 
@@ -30,11 +31,18 @@ class Command(BaseTemplateCommand):
         never_used.sort()
 
         self.print_yellow("Templates included only once:")
-        self._print_list(single_use)
+        if single_use:
+            self._print_list(single_use)
+        else:
+            self.print_white("None")
 
         self.print_red("Templates never included or inherited and not found in"
                        " python files")
-        self._print_list(never_used)
+
+        if never_used:
+            self._print_list(never_used)
+        else:
+            self.print_white("None")
 
     def _found_in_python_files(self, text_list):
         text_map = {text: False for text in text_list}
@@ -43,8 +51,9 @@ class Command(BaseTemplateCommand):
             for file in files:
                 file_path = os.path.join(root, file)
                 if file.endswith(".py"):
+                    file_content = six.u(open(file_path, 'r').read())
                     for text in text_list:
-                        if text in open(file_path, 'r').read().decode('utf-8'):
+                        if text in file_content:
                             text_map[text] = True
         return text_map
 
