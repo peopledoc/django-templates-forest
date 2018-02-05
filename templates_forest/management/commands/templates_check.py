@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import io
 import os
 import six
 from django.conf import settings
@@ -51,7 +52,7 @@ class Command(BaseTemplateCommand):
             for file in files:
                 file_path = os.path.join(root, file)
                 if file.endswith(".py"):
-                    file_content = six.u(open(file_path, 'r').read())
+                    file_content = io.open(file_path, encoding='utf-8').read()
                     for text in text_list:
                         if text in file_content:
                             text_map[text] = True
