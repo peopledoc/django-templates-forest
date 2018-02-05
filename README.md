@@ -41,11 +41,15 @@ Next to each tree root we have the ``height`` of the three (the number of edges 
 
 ## template_info ``<template path>``
 
-Displays all the information of a single template. His position inside a tree,
-all the templates included, or everywhere it has been included
+Displays the information for a single template: His position inside a tree,
+all the templates included inside this template, and the list of templates that include this template:
+
+![template_info command example](screenshots/template_info.png "Example of the template_info command result")
 
 ## templates_check
 
 Using the template trees it will display a list of templates that we only
 included once ("useless include") and the orphan templates that were never
 included and that can't be found on the python files in ``APPLICATION_DIR``
+
+![templates_check command example](screenshots/templates_check.png "Example of the templates_check command result")
